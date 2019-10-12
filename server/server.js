@@ -12,6 +12,7 @@ let playerData = [];
 app.post('/new-player', (req, res) => {
     console.log('adding player', req.body);
     playerData.push(req.body);
+    checkPlayers();
     res.sendStatus(200);
 
 });
@@ -27,6 +28,78 @@ app.get('/player-count', (req, res) => {
 
 });
 
+app.get('/roll')
+
 app.listen(PORT, () => {
     console.log(`Up and running on PORT: ${PORT}`);
 });
+
+function checkPlayers(){
+    if(playerData.length == 4){
+        game();
+    }
+}
+
+function game(){
+    if(playersLeft() > 1){
+        round();
+    }else{
+        playerData = [];
+    }
+}
+
+function round(){
+    for(let player of playerData){
+        for(let i = 0; i < 5; i++){
+            player.dice[i] = Math.floor(Math.random() * 6) + 1;
+        }
+        console.log(`${player.playerName} rolled ${player.dice[0]}, ${player.dice[1]}, ${player.dice[2]}, ${player.dice[3]}, ${player.dice[4]}`);
+    }
+    countDiceRolls();
+}
+
+function playersLeft(){
+    let playersWithDice = 0;
+    for(let player of playerData){
+        if(player.diceRemaining > 0){
+            playersWithDice++;
+        }
+    }
+    return playersWithDice;
+}
+
+function countDiceRolls(){
+    let rolls = {
+        ones: 0,
+        twos: 0,
+        threes: 0,
+        fours: 0,
+        fives: 0,
+        sixes: 0,
+    }
+    for(let player of playerData){
+        for(let i = 0; i < 5; i++){
+            if(player.dice[i] == 1){
+                rolls.ones++;
+            }
+            if(player.dice[i] == 2){
+                rolls.twos++;
+            }
+            if(player.dice[i] == 3){
+                rolls.threes++;
+            }
+            if(player.dice[i] == 4){
+                rolls.fours++;
+            }
+            if(player.dice[i] == 5){
+                rolls.fives++;
+            }
+            if(player.dice[i] == 6){
+                rolls.sixes++;
+            }
+        }
+    }
+    console.log(`ones:${rolls.ones} twos:${rolls.twos} threes:${rolls.threes} fours:${rolls.fours} fives:${rolls.fives} sixes:${rolls.sixes}`);
+    
+    return rolls;
+}

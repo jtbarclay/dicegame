@@ -12,10 +12,20 @@ function newPlayer() {
         method: 'POST',
         data: {
             playerName: $('#playerNameInput').val(),
-            dieCount: 5,
+            diceRemaining: 5,
+            dice: {
+                die1: 0,
+                die2: 0,
+                die3: 0,
+                die4: 0,
+                die5: 0,
+            },
         }
     }).then(function (response) {
         console.log('new player response', response);
+        $('.newPlayer').data({
+            playerName: $('#playerNameInput').val(),
+        });
         $('.newPlayer').empty();
         $('.newPlayer').addClass('waiting');
         $('.waiting').append(`<p id="waiting">waiting</p>`);
