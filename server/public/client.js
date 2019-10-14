@@ -1,6 +1,7 @@
 $(onReady);
 
 let playerCount = 0;
+let currentRound = 0;
 
 function onReady() {
     $('#addPlayerButton').click(newPlayer);
@@ -20,6 +21,7 @@ function newPlayer() {
                 die4: 0,
                 die5: 0,
             },
+            turn: false,
         }
     }).then(function (response) {
         console.log('new player response', response);
@@ -59,6 +61,20 @@ function waiting() {
     }
 }
 
-function newGame(){
+function newGame() {
     $('.newGame').append(`<p>New Game Area</p>`);
+    $('.newGame').append(`<p id="round">Round: ${currentRound}</p>`);
+    setTimeout(() => {
+        myTurn();
+    }, 2000);
+}
+
+function myTurn() {
+    $.ajax({
+        url: '/round',
+        method: 'GET'
+    }).then(function (response) {
+        currentRound = response.round;
+        $('#round').text(`Round: ${currentRound}`);
+    })
 }
